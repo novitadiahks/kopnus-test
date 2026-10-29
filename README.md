@@ -144,19 +144,6 @@ Pastikan seeder mengisi password yang di-hash dan role yang sesuai dengan aturan
 
 ## 5. Menjalankan aplikasi
 
-Jika project menggunakan Vite untuk aset frontend, install dependency JavaScript dan jalankan build:
-
-```bash
-npm install
-npm run build
-```
-
-Untuk pengembangan frontend, gunakan terminal terpisah:
-
-```bash
-npm run dev
-```
-
 Jalankan server Laravel:
 
 ```bash
