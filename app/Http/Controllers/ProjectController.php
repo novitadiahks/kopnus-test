@@ -7,13 +7,12 @@ use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\TaskFilterRequest;
+use App\Http\Requests\ActivityLogFilterRequest;
 use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
-
-
-    public function index()
+    public function index(ActivityLogFilterRequest $request)
     {
         Gate::authorize('viewAny', Project::class);
 
@@ -31,8 +30,37 @@ class ProjectController extends Controller
             ->latest()
             ->get();
 
-        return view('dashboard', compact('projects'));
+        $filters = $request->validated();
+
+        $logs = ActivityLog::query()
+            ->where('user_id', $request->user()->id)
+            ->when(
+                $filters['action'] ?? null,
+                fn($query, $action) =>
+                $query->where('action', $action)
+            )
+            ->when(
+                $filters['from'] ?? null,
+                fn($query, $from) =>
+                $query->whereDate('created_at', '>=', $from)
+            )
+            ->when(
+                $filters['to'] ?? null,
+                fn($query, $to) =>
+                $query->whereDate('created_at', '<=', $to)
+            )
+            ->latest('created_at')
+            ->latest('id')
+            ->paginate(5)
+            ->withQueryString();
+
+        return view('dashboard', compact(
+            'projects',
+            'logs',
+            'filters'
+        ));
     }
+
 
     public function store(Request $request)
     {

@@ -1,58 +1,214 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aplikasi Manajemen Proyek dan Task
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi berbasis Laravel 13 untuk mengelola proyek, task, status task, dan riwayat aktivitas pengguna.
 
-## About Laravel
+## Teknologi
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP
+- Laravel 13
+- MySQL
+- Composer
+- Node.js dan NPM (untuk aset frontend jika digunakan oleh project)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Persyaratan
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Pastikan perangkat sudah memiliki:
+- PHP dengan ekstensi yang dibutuhkan Laravel 13
+- Composer
+- MySQL
+- Node.js dan NPM
+- Git (jika mengunduh project melalui Git)
 
-## Learning Laravel
+Periksa versi PHP yang disyaratkan oleh `composer.json` project ini sebelum instalasi.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 1. Instalasi
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Clone repository, lalu masuk ke folder project:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <URL_REPOSITORY>
+cd <NAMA_FOLDER_PROJECT>
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Install dependency PHP:
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Buat file environment dari contoh yang tersedia.
 
-## Code of Conduct
+**Windows (Command Prompt):**
+```bat
+copy .env.example .env
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**macOS/Linux/Git Bash:**
+```bash
+cp .env.example .env
+```
 
-## Security Vulnerabilities
+Buat application key:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan key:generate
+```
 
-## License
+## 2. Konfigurasi MySQL
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. Jalankan MySQL melalui aplikasi yang digunakan (misalnya MySQL Server, XAMPP, atau Laragon).
+2. Buat database baru, misalnya `kopnus_test`.
+3. Buka file `.env`, lalu sesuaikan konfigurasi database:
+
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=kopnus_test
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Sesuaikan `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` dengan konfigurasi MySQL lokal. Contoh di atas mengasumsikan MySQL lokal menggunakan user `root` tanpa password; ubah jika konfigurasi perangkat berbeda.
+
+Jangan unggah file `.env` yang berisi kredensial ke repository.
+
+## 3. Menyiapkan database
+
+Pilih salah satu cara berikut, sesuai file yang tersedia di repository.
+
+### Opsi A — Membuat tabel melalui migration (umumnya disarankan)
+
+Jika repository menyertakan migration Laravel dan tidak ada file dump SQL yang harus diimpor, jalankan:
+
+```bash
+php artisan migrate --seed
+```
+
+Perintah tersebut menjalankan migration dan seeder yang terdaftar di project. Pastikan `DatabaseSeeder` memanggil seeder pengguna yang diperlukan.
+
+Jika hanya ingin menjalankan migration tanpa data contoh:
+
+```bash
+php artisan migrate
+```
+
+> **Perhatian:** `php artisan migrate:fresh --seed` menghapus semua tabel terlebih dahulu, sehingga seluruh data database akan hilang. Jalankan hanya pada database pengembangan yang memang boleh di-reset.
+
+### Opsi B — Import file database `.sql`
+
+Jika repository menyediakan file dump database, misalnya `database.sql`:
+
+**Melalui phpMyAdmin**
+1. Buka phpMyAdmin.
+2. Buat atau pilih database yang sesuai dengan `DB_DATABASE` di file `.env`.
+3. Buka tab **Import**.
+4. Pilih file `.sql`, lalu jalankan proses import.
+5. Pastikan tabel-tabel berhasil dibuat.
+
+**Melalui terminal MySQL**
+
+```bash
+mysql -u root -p kopnus_test < database.sql
+```
+
+Ganti `root`, `kopnus_test`, dan `database.sql` sesuai konfigurasi serta lokasi file. Jika MySQL tidak menggunakan password, ikuti konfigurasi lokal yang berlaku.
+
+Setelah import, pastikan konfigurasi `.env` menunjuk ke database yang benar. Jangan menjalankan `migrate:fresh` setelah import jika ingin mempertahankan data hasil import.
+
+## 4. Menyiapkan akun contoh
+
+Seeder project menyediakan akun contoh berikut:
+
+| Nama | Email |
+|---|---|
+| Admin | `admin@example.com` |
+| Novita | `novita@example.com` |
+| Budi | `budi@example.com` |
+
+**Password:** gunakan password yang ditetapkan di seeder project (`DatabaseSeeder` atau seeder pengguna terkait). Pastikan password yang benar dicatat di sini sebelum README dipublikasikan; jangan menebak password berdasarkan email.
+
+Jika akun belum dibuat, jalankan seeder:
+
+```bash
+php artisan db:seed
+```
+
+Atau jalankan migration sekaligus seeder pada database baru:
+
+```bash
+php artisan migrate --seed
+```
+
+Pastikan seeder mengisi password yang di-hash dan role yang sesuai dengan aturan aplikasi. Gunakan hanya akun/password demo untuk lingkungan pengembangan.
+
+## 5. Menjalankan aplikasi
+
+Jika project menggunakan Vite untuk aset frontend, install dependency JavaScript dan jalankan build:
+
+```bash
+npm install
+npm run build
+```
+
+Untuk pengembangan frontend, gunakan terminal terpisah:
+
+```bash
+npm run dev
+```
+
+Jalankan server Laravel:
+
+```bash
+php artisan serve
+```
+
+Buka alamat yang ditampilkan di terminal, biasanya:
+
+http://127.0.0.1:8000
+
+Login menggunakan salah satu email contoh dan password yang sudah dikonfigurasi pada seeder.
+
+## 6. Fitur utama
+
+- Login dan autentikasi pengguna.
+- Pengelolaan proyek milik pengguna.
+- Pembuatan task dalam proyek.
+- Perubahan status task sesuai alur yang diterapkan aplikasi.
+- Riwayat aktivitas pengguna.
+- Filter riwayat aktivitas berdasarkan aksi dan rentang tanggal.
+
+Fitur yang tersedia mengikuti implementasi pada repository.
+
+## 7. Troubleshooting
+
+### Error koneksi database
+- Pastikan layanan MySQL sedang berjalan.
+- Periksa `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` di `.env`.
+- Pastikan database sudah dibuat.
+
+### Tabel `sessions` tidak ditemukan
+Periksa nilai `SESSION_DRIVER` di `.env`. Jika menggunakan driver `database`, pastikan migration tabel sessions tersedia dan sudah dijalankan:
+
+```bash
+php artisan migrate
+```
+
+### Perubahan `.env` tidak terbaca
+Bersihkan cache konfigurasi:
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+```
+
+### Akun contoh tidak bisa login
+- Pastikan seeder pengguna sudah dijalankan.
+- Periksa password dan role yang ditetapkan di seeder.
+- Pastikan password disimpan menggunakan hashing Laravel, misalnya `Hash::make(...)`.
+
+## Catatan
+
+- Jangan commit `.env`, kredensial database, atau password pribadi ke Git.
+- Untuk instalasi baru, gunakan migration dan seeder yang disediakan project.
+- Jika menggunakan file SQL hasil export, simpan file tersebut dengan nama dan lokasi yang jelas, lalu sesuaikan instruksi import di atas.

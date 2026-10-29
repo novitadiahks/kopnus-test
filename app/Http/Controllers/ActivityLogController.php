@@ -32,7 +32,5 @@ class ActivityLogController extends Controller
             ->latest('id')
             ->paginate(5)
             ->withQueryString();
-
-        return view('activity-logs.index', compact('logs', 'filters'));
     }
 }

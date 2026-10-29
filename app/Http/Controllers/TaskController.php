@@ -37,11 +37,13 @@ class TaskController extends Controller
                 'action' => 'TASK_CREATED',
                 'subject_type' => Task::class,
                 'subject_id' => $task->id,
+
                 'payload' => [
-                    'title' => $task->title,
-                    'project_id' => $project->id,
+                    'project_name' => $project->name,
+                    'task_name' => $task->title,
                     'status' => $task->status,
                 ],
+
             ]);
         });
 

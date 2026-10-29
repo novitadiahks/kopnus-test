@@ -36,16 +36,20 @@ class TaskService
                 'status' => $newStatus,
             ]);
 
+
             ActivityLog::create([
                 'user_id' => auth()->id(),
                 'action' => 'TASK_STATUS_UPDATED',
                 'subject_type' => Task::class,
                 'subject_id' => $lockedTask->id,
                 'payload' => [
+                    'project_name' => $lockedTask->project->name,
+                    'task_name' => $lockedTask->title,
                     'old_status' => $oldStatus,
                     'new_status' => $newStatus,
                 ],
             ]);
+
 
             return $lockedTask;
         });
